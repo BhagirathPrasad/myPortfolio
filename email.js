@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('📤 Sending email to: chandany67071@gmail.com');
         
         // Send email using EmailJS
-        emailjs.send('service_8a7n7w9', 'template_i931pit', templateParams)
+        emailjs.send('service_8a7n7w9', 'template_4eevei2', templateParams)
         .then(function(response) {
             console.log('✅ SUCCESS! Email sent:', {
                 status: response.status,
