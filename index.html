@@ -16,6 +16,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
     <style>
         :root {
             --primary-color: #3b82f6;
@@ -1739,6 +1742,7 @@
         <p class="footer-text">Built with ❤️ using modern web technologies</p>
     </footer>
 
+    <!-- Main Script -->
     <script>
         // Custom Cursor Functionality
         const cursor = document.querySelector('.cursor');
@@ -1819,31 +1823,6 @@
         }
 
         window.addEventListener('scroll', updateActiveNavLink);
-
-        // Form Submission
-        const contactForm = document.getElementById('contactForm');
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
-            };
-            
-            // In a real application, you would send this data to a server
-            // For now, we'll just show a success message
-            console.log('Form submitted:', formData);
-            
-            // Show notification
-            alert('Message sent successfully! I\'ll get back to you soon.');
-            
-            // Reset form
-            contactForm.reset();
-        });
 
         // Interactive Code Terminal
         const terminalBody = document.getElementById('terminalBody');
@@ -2043,5 +2022,8 @@
             });
         }
     </script>
+    
+    <!-- EmailJS Script -->
+    <script src="email.js"></script>
 </body>
 </html>
