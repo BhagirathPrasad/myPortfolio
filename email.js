@@ -1,39 +1,39 @@
 // email.js
 // EmailJS Integration for Contact Form - Template Matched Version
 
-(function() {
+(function () {
     // Initialize EmailJS with your user ID (public key)
     // IMPORTANT: Replace 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
     // Get it from: https://dashboard.emailjs.com/admin/integration
     emailjs.init("dHL0rzfRRzmUah2oy");
-    
+
     console.log('✅ EmailJS initialized for portfolio contact form');
     console.log('📧 Using Service ID: service_8a7n7w9');
     console.log('📄 Using Template ID: template_4eevei2');
 })();
 
 // Handle contact form submission
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contactForm');
-    
+
     if (!contactForm) {
         console.error('❌ Contact form not found! Make sure form has id="contactForm"');
         return;
     }
-    
+
     console.log('✅ Contact form found, setting up EmailJS handler');
-    
-    contactForm.addEventListener('submit', function(event) {
+
+    contactForm.addEventListener('submit', function (event) {
         event.preventDefault();
         console.log('📤 Form submission started');
-        
+
         // Show loading state
         const submitBtn = contactForm.querySelector('.submit-btn');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.7';
-        
+
         // Get form data
         const formData = {
             name: document.getElementById('name').value.trim(),
@@ -41,15 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
             subject: document.getElementById('subject').value.trim(),
             message: document.getElementById('message').value.trim()
         };
-        
+
         console.log('📝 Form data collected:', formData);
-        
+
         // Validate form data
         if (!validateForm(formData)) {
             resetButtonState(submitBtn, originalText);
             return;
         }
-        
+
         // Prepare data for EmailJS template - EXACT MATCH to your template variables
         const templateParams = {
             first_name: extractFirstName(formData.name),
@@ -60,94 +60,94 @@ document.addEventListener('DOMContentLoaded', function() {
             phone: '', // Not collected in form, sent as empty
             msg: formData.message
         };
-        
+
         console.log('📦 Template parameters prepared:', templateParams);
-        console.log('📤 Sending email to: chandany67071@gmail.com');
-        
+        console.log('📤 Sending email to: bhagirathkumar.bk8239@gmail.com');
+
         // Send email using EmailJS
         emailjs.send('service_8a7n7w9', 'template_4eevei2', templateParams)
-        .then(function(response) {
-            console.log('✅ SUCCESS! Email sent:', {
-                status: response.status,
-                text: response.text,
-                timestamp: new Date().toISOString()
+            .then(function (response) {
+                console.log('✅ SUCCESS! Email sent:', {
+                    status: response.status,
+                    text: response.text,
+                    timestamp: new Date().toISOString()
+                });
+
+                // Show success notification
+                showNotification('🎉 Message sent successfully! I\'ll get back to you soon.', 'success');
+
+                // Reset form
+                contactForm.reset();
+
+                // Reset button state
+                resetButtonState(submitBtn, originalText);
+
+                // Log success
+                logSubmission(formData, 'success');
+
+            }, function (error) {
+                console.error('❌ FAILED to send email:', {
+                    status: error.status,
+                    text: error.text,
+                    message: error.message
+                });
+
+                // Show error message with retry option
+                showNotification(
+                    '❌ Failed to send message. Please try again or contact me directly at bhagirathkumar.bk8239@gmail.com',
+                    'error'
+                );
+
+                // Reset button state
+                resetButtonState(submitBtn, originalText);
+
+                // Log error
+                logSubmission(formData, 'error', error);
             });
-            
-            // Show success notification
-            showNotification('🎉 Message sent successfully! I\'ll get back to you soon.', 'success');
-            
-            // Reset form
-            contactForm.reset();
-            
-            // Reset button state
-            resetButtonState(submitBtn, originalText);
-            
-            // Log success
-            logSubmission(formData, 'success');
-            
-        }, function(error) {
-            console.error('❌ FAILED to send email:', {
-                status: error.status,
-                text: error.text,
-                message: error.message
-            });
-            
-            // Show error message with retry option
-            showNotification(
-                '❌ Failed to send message. Please try again or contact me directly at chandany67071@gmail.com',
-                'error'
-            );
-            
-            // Reset button state
-            resetButtonState(submitBtn, originalText);
-            
-            // Log error
-            logSubmission(formData, 'error', error);
-        });
     });
-    
+
     // Helper Functions
-    
+
     function validateForm(formData) {
         // Check all fields are filled
         if (!formData.name || !formData.email || !formData.subject || !formData.message) {
             showNotification('📝 Please fill in all fields before submitting.', 'warning');
             return false;
         }
-        
+
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
             showNotification('📧 Please enter a valid email address.', 'warning');
             return false;
         }
-        
+
         // Name validation (at least 2 characters)
         if (formData.name.length < 2) {
             showNotification('👤 Please enter your full name.', 'warning');
             return false;
         }
-        
+
         // Message validation (at least 10 characters)
         if (formData.message.length < 10) {
             showNotification('💬 Please write a meaningful message (at least 10 characters).', 'warning');
             return false;
         }
-        
+
         return true;
     }
-    
+
     function extractFirstName(fullName) {
         // Extract first name (first word)
         return fullName.split(' ')[0] || '';
     }
-    
+
     function extractLastName(fullName) {
         // Extract last name (everything after first word)
         const parts = fullName.split(' ');
         return parts.length > 1 ? parts.slice(1).join(' ') : '';
     }
-    
+
     function resetButtonState(button, originalText) {
         setTimeout(() => {
             button.innerHTML = originalText;
@@ -155,24 +155,24 @@ document.addEventListener('DOMContentLoaded', function() {
             button.style.opacity = '1';
         }, 500);
     }
-    
+
     function showNotification(message, type) {
         // Remove existing notification if any
         const existingNotification = document.querySelector('.custom-notification');
         if (existingNotification) {
             existingNotification.remove();
         }
-        
+
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `custom-notification ${type}`;
-        
+
         // Set icon based on type
         let icon = 'fa-info-circle';
         if (type === 'success') icon = 'fa-check-circle';
         if (type === 'error') icon = 'fa-exclamation-circle';
         if (type === 'warning') icon = 'fa-exclamation-triangle';
-        
+
         notification.innerHTML = `
             <div class="notification-content">
                 <i class="fas ${icon}"></i>
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <i class="fas fa-times"></i>
             </button>
         `;
-        
+
         // Add styles for notification
         const styles = {
             position: 'fixed',
@@ -204,29 +204,29 @@ document.addEventListener('DOMContentLoaded', function() {
             fontFamily: "'Poppins', sans-serif",
             fontSize: '0.95rem'
         };
-        
+
         // Apply styles
         Object.assign(notification.style, styles);
-        
+
         // Add animation keyframes
         addNotificationStyles();
-        
+
         // Add close functionality
-        notification.querySelector('.notification-close').addEventListener('click', function() {
+        notification.querySelector('.notification-close').addEventListener('click', function () {
             closeNotification(notification);
         });
-        
+
         // Auto-remove notification after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 closeNotification(notification);
             }
         }, 5000);
-        
+
         // Add to DOM
         document.body.appendChild(notification);
     }
-    
+
     function getBackgroundColor(type) {
         const colors = {
             success: '#10b981', // Green
@@ -236,11 +236,11 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         return colors[type] || colors.info;
     }
-    
+
     function addNotificationStyles() {
         // Check if styles already exist
         if (document.getElementById('notification-styles')) return;
-        
+
         const style = document.createElement('style');
         style.id = 'notification-styles';
         style.textContent = `
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
     }
-    
+
     function closeNotification(notification) {
         notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
         setTimeout(() => {
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 300);
     }
-    
+
     function logSubmission(formData, status, error = null) {
         const logEntry = {
             timestamp: new Date().toISOString(),
@@ -313,33 +313,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageLength: formData.message.length
             }
         };
-        
+
         if (error) {
             logEntry.error = {
                 status: error.status,
                 text: error.text
             };
         }
-        
+
         console.log('📋 Form Submission Log:', logEntry);
     }
-    
+
     // Add input validation styles dynamically
     function setupFormValidation() {
         const inputs = document.querySelectorAll('.form-input, .form-textarea');
-        
+
         inputs.forEach(input => {
             // Add real-time validation
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 validateSingleField(this);
             });
-            
+
             // Clear error on focus
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 clearFieldError(this);
             });
         });
-        
+
         // Add validation styles
         const style = document.createElement('style');
         style.textContent = `
@@ -381,12 +381,12 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
     }
-    
+
     function validateSingleField(field) {
         const value = field.value.trim();
         let isValid = true;
         let errorMessage = '';
-        
+
         if (field.id === 'email' && value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(value)) {
@@ -394,59 +394,59 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorMessage = 'Please enter a valid email address';
             }
         }
-        
+
         if (field.id === 'name' && value && value.length < 2) {
             isValid = false;
             errorMessage = 'Name must be at least 2 characters';
         }
-        
+
         if ((field.id === 'subject' || field.id === 'message') && value && value.length < 3) {
             isValid = false;
             errorMessage = 'This field must be at least 3 characters';
         }
-        
+
         if (!isValid) {
             showFieldError(field, errorMessage);
         } else {
             clearFieldError(field);
         }
     }
-    
+
     function showFieldError(field, message) {
         // Remove existing error
         clearFieldError(field);
-        
+
         // Add error message
         const errorElement = document.createElement('span');
         errorElement.className = 'field-error';
         errorElement.textContent = message;
         field.parentNode.appendChild(errorElement);
-        
+
         // Add error styling
         field.style.borderColor = '#ef4444';
     }
-    
+
     function clearFieldError(field) {
         // Remove error message
         const existingError = field.parentNode.querySelector('.field-error');
         if (existingError) {
             existingError.remove();
         }
-        
+
         // Reset styling
         field.style.borderColor = '';
     }
-    
+
     // Initialize form validation
     setupFormValidation();
-    
+
     console.log('✅ EmailJS setup complete. Ready to send emails!');
-    console.log('📧 Template will send emails to: chandany67071@gmail.com');
+    console.log('📧 Template will send emails to: bhagirathkumar.bk8239@gmail.com');
     console.log('📝 Template variables configured: first_name, last_name, problem, address, mail, phone, msg');
 });
 
 // Global error handler for EmailJS
-window.addEventListener('emailjs:error', function(event) {
+window.addEventListener('emailjs:error', function (event) {
     console.error('🌐 EmailJS Global Error:', event.detail);
-    alert('There was an error with the email service. Please try again later or contact me directly at chandany67071@gmail.com');
+    alert('There was an error with the email service. Please try again later or contact me directly at bhagirathkumar.bk8239@gmail.com');
 });
